@@ -1,4 +1,4 @@
-package com.tinkooladik.macrobenchmark.chart
+package com.tinkooladik.macrobenchmark.chart.models
 
 data class BenchmarkReportUi(
     val device: String,
@@ -33,18 +33,23 @@ fun BenchmarkReport.toUi() = BenchmarkReportUi(
     benchmarks = benchmarks.map { it.toUi() }
 )
 
-fun Benchmark.toUi() = BenchmarkUi(
-    name = name,
-    metrics = metrics.mapValues { it.value.toUi() },
-    sampledMetrics = sampledMetrics.mapValues { it.value.toUi() }
-)
+fun Benchmark.toUi(): BenchmarkUi {
+    val sampledMetrics = sampledMetrics.mapValues {
+        it.value.run {
+            SampledMetricUi(
+                P50 = P50, P90 = P90, P95 = P95, P99 = P99
+            )
+        }
+    }
+    return BenchmarkUi(
+        name = name,
+        metrics = metrics.mapValues { it.value.toUi() },
+        sampledMetrics = sampledMetrics
+    )
+}
 
 fun Metric.toUi() = MetricUi(
     minimum = minimum, maximum = maximum, median = median
-)
-
-fun SampledMetric.toUi() = SampledMetricUi(
-    P50 = P50, P90 = P90, P95 = P95, P99 = P99
 )
 
 data class MetricValue(
