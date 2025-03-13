@@ -36,11 +36,11 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "rbak.macrobenchmark.chart.MainKt"
+        mainClass = "com.tinkooladik.macrobenchmark.chart.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "rbak.macrobenchmark.chart"
+            packageName = "com.tinkooladik.macrobenchmark.chart"
             packageVersion = "1.0.0"
         }
     }

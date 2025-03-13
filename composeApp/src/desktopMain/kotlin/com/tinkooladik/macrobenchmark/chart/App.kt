@@ -1,4 +1,4 @@
-package rbak.macrobenchmark.chart
+package com.tinkooladik.macrobenchmark.chart
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.VerticalScrollbar
