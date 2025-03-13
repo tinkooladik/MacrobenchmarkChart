@@ -1,8 +1,8 @@
-package com.tinkooladik.macromenchmark.chart
+package com.tinkooladik.macrobenchmark.chart
 
-import com.tinkooladik.macromenchmark.chart.models.BenchmarkReport
-import com.tinkooladik.macromenchmark.chart.models.BenchmarkReportUi
-import com.tinkooladik.macromenchmark.chart.models.toUi
+import com.tinkooladik.macrobenchmark.chart.models.BenchmarkReport
+import com.tinkooladik.macrobenchmark.chart.models.BenchmarkReportUi
+import com.tinkooladik.macrobenchmark.chart.models.toUi
 import kotlinx.serialization.json.Json
 
 val json = Json {

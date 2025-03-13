@@ -1,4 +1,4 @@
-package com.tinkooladik.macromenchmark.chart.models
+package com.tinkooladik.macrobenchmark.chart.models
 
 import kotlinx.serialization.Serializable
 

@@ -1,9 +1,9 @@
-package com.tinkooladik.macromenchmark.chart.views
+package com.tinkooladik.macrobenchmark.chart.views
 
 import androidx.compose.runtime.Composable
-import com.tinkooladik.macromenchmark.chart.models.toChart
-import com.tinkooladik.macromenchmark.chart.models.toChartSampled
-import com.tinkooladik.macromenchmark.chart.readBenchmark
+import com.tinkooladik.macrobenchmark.chart.models.toChart
+import com.tinkooladik.macrobenchmark.chart.models.toChartSampled
+import com.tinkooladik.macrobenchmark.chart.readBenchmark
 
 @Composable
 fun BenchmarkChart() {
