@@ -25,12 +25,14 @@ kotlin {
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation(compose.foundation)
+            implementation(compose.material)
+            implementation(compose.ui)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.kotlinx.serialization)
         }
     }
 }
-
 
 compose.desktop {
     application {
