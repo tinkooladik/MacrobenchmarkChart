@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.math.log10
 import kotlin.math.max
 
 @Composable
@@ -95,7 +94,12 @@ fun MetricBarChart(items: List<MetricChartItem>) {
         Box(modifier = Modifier.weight(1f).verticalScroll(scrollState)) {
             Column(modifier = Modifier.padding(16.dp)) {
                 items.forEach { item ->
-                    Text(item.title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 24.dp))
+                    Text(item.title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 4.dp))
+                    Text(
+                        benchmarkComparisonRules[item.title] ?: "",
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(bottom = 36.dp)
+                    )
 
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp),
@@ -115,11 +119,15 @@ fun MetricBarChart(items: List<MetricChartItem>) {
                                         modifier = Modifier.fillMaxSize()
                                     ) {
                                         fun scale(value: Double, reference: Double): Float {
-                                            val ratio = if (reference == 0.0) 1.0 else value / reference
+                                            val ratio =
+                                                if (reference == 0.0) 1.0 else value / reference
                                             return (ratio * size.height).toFloat()
                                         }
 
-                                        val referenceValue = max(values.first, values.second) // Normalize based on the larger value
+                                        val referenceValue = max(
+                                            values.first,
+                                            values.second
+                                        ) // Normalize based on the larger value
                                         val beforeHeight = scale(values.first, referenceValue)
                                         val afterHeight = scale(values.second, referenceValue)
 
@@ -127,14 +135,23 @@ fun MetricBarChart(items: List<MetricChartItem>) {
                                         drawRoundRect(
                                             color = ITEM_COLOR_BEFORE,
                                             topLeft = Offset(0f, size.height - beforeHeight),
-                                            size = Size(size.width / 2, beforeHeight) // Use exactly half the width
+                                            size = Size(
+                                                size.width / 2,
+                                                beforeHeight
+                                            ) // Use exactly half the width
                                         )
 
                                         // After Value
                                         drawRoundRect(
                                             color = ITEM_COLOR_AFTER,
-                                            topLeft = Offset(size.width / 2, size.height - afterHeight), // No space added
-                                            size = Size(size.width / 2, afterHeight) // Use exactly half the width
+                                            topLeft = Offset(
+                                                size.width / 2,
+                                                size.height - afterHeight
+                                            ), // No space added
+                                            size = Size(
+                                                size.width / 2,
+                                                afterHeight
+                                            ) // Use exactly half the width
                                         )
                                     }
                                 }
@@ -147,7 +164,10 @@ fun MetricBarChart(items: List<MetricChartItem>) {
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(1.dp).fillMaxWidth().background(Color(0xFFD2D2D2)))
+                    Spacer(
+                        modifier = Modifier.height(1.dp).fillMaxWidth()
+                            .background(Color(0xFFD2D2D2))
+                    )
                     Spacer(modifier = Modifier.height(24.dp))
                 }
             }
@@ -160,3 +180,15 @@ fun MetricBarChart(items: List<MetricChartItem>) {
         )
     }
 }
+
+val benchmarkComparisonRules: Map<String, String> = mapOf(
+    "frameCount" to "The higher, the better. More frames indicate smoother performance.",
+    "memoryHeapSizeLastKb" to "The lower, the better. Less heap memory usage reduces memory pressure.",
+    "memoryHeapSizeMaxKb" to "The lower, the better. Indicates peak memory usage; high values suggest memory inefficiencies.",
+    "memoryRssAnonLastKb" to "The lower, the better. Represents the actual RAM used; high values indicate more memory consumption.",
+    "memoryRssAnonMaxKb" to "The lower, the better. High peak values may lead to performance degradation due to memory pressure.",
+    "memoryRssFileLastKb" to "The lower, the better. Measures memory-mapped file usage; reducing this can improve efficiency.",
+    "memoryRssFileMaxKb" to "The lower, the better. High values mean more file-backed memory in RAM, which might indicate excessive caching.",
+    "frameDurationCpuMs" to "The lower, the better. Measures frame rendering time; lower values mean smoother performance.",
+    "frameOverrunMs" to "The lower, the better. Measures frame rendering delays; high values indicate lag and jank."
+)
