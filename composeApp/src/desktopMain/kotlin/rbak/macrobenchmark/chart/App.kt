@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -174,14 +175,17 @@ fun MetricValueBars(label: String, before: Double, after: Double) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(label, fontSize = 14.sp)
-        Text("Before: ${String.format("%.1f", before)}", fontSize = 12.sp)
-        Text("After: ${String.format("%.1f", after)}", fontSize = 12.sp)
-        Spacer(modifier = Modifier.height(8.dp))
+        Text("Before: ${String.format("%.1f", before)}", fontSize = 10.sp)
+        Text(
+            "After: ${String.format("%.1f", after)}",
+            fontSize = 10.sp,
+            modifier = Modifier.offset(y = (-8).dp)
+        )
         val difference = (after - before).let {
             if (it > 0) "+${String.format("%.1f", it)}" else String.format("%.1f", it)
         }
         Spacer(
-            modifier = Modifier.height(1.dp).width(200.dp)
+            modifier = Modifier.height(1.dp).width(150.dp)
                 .background(Color(0xFFDEDCDC))
         )
         Text("Difference: $difference", fontSize = 12.sp)
