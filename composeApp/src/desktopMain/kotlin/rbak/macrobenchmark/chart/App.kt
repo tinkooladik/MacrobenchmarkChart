@@ -89,15 +89,13 @@ fun readBenchmark(fileName: String): BenchmarkReportUi {
 
 @Composable
 fun MetricBarChart(items: List<MetricChartItem>) {
-    val maxHeight = 120
-
     val scrollState = rememberScrollState()
 
     Row(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.weight(1f).verticalScroll(scrollState)) {
             Column(modifier = Modifier.padding(16.dp)) {
                 items.forEach { item ->
-                    Text(item.title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 8.dp))
+                    Text(item.title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 24.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp),
@@ -118,28 +116,25 @@ fun MetricBarChart(items: List<MetricChartItem>) {
                                     ) {
                                         fun scale(value: Double, reference: Double): Float {
                                             val ratio = if (reference == 0.0) 1.0 else value / reference
-                                            return (ratio * maxHeight).toFloat()
+                                            return (ratio * size.height).toFloat()
                                         }
 
-                                        val referenceValue = max(values.first, values.second) // Use max value for relative scaling
+                                        val referenceValue = max(values.first, values.second) // Normalize based on the larger value
                                         val beforeHeight = scale(values.first, referenceValue)
                                         val afterHeight = scale(values.second, referenceValue)
 
-                                        // Before Value (Blue)
+                                        // Before Value
                                         drawRoundRect(
                                             color = ITEM_COLOR_BEFORE,
                                             topLeft = Offset(0f, size.height - beforeHeight),
-                                            size = Size(size.width / 2 - 2f, beforeHeight)
+                                            size = Size(size.width / 2, beforeHeight) // Use exactly half the width
                                         )
 
-                                        // After Value (Green)
+                                        // After Value
                                         drawRoundRect(
                                             color = ITEM_COLOR_AFTER,
-                                            topLeft = Offset(
-                                                size.width / 2 + 2f,
-                                                size.height - afterHeight
-                                            ),
-                                            size = Size(size.width / 2 - 2f, afterHeight)
+                                            topLeft = Offset(size.width / 2, size.height - afterHeight), // No space added
+                                            size = Size(size.width / 2, afterHeight) // Use exactly half the width
                                         )
                                     }
                                 }
