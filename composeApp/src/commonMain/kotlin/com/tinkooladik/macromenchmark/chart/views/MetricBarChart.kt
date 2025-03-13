@@ -1,4 +1,4 @@
-package com.tinkooladik.macrobenchmark.chart.views
+package com.tinkooladik.macromenchmark.chart.views
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tinkooladik.macrobenchmark.chart.benchmarkComparisonRules
-import com.tinkooladik.macrobenchmark.chart.models.MetricChartItem
+import com.tinkooladik.macromenchmark.chart.benchmarkComparisonRules
+import com.tinkooladik.macromenchmark.chart.models.MetricChartItem
 
 @Composable
 fun MetricBarChart(items: List<MetricChartItem>) {

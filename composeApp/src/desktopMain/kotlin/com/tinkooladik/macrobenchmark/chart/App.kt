@@ -6,7 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.tinkooladik.macrobenchmark.chart.views.BenchmarkChart
+import com.tinkooladik.macromenchmark.chart.views.BenchmarkChart
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -18,5 +18,3 @@ fun App() {
         }
     }
 }
-
-

@@ -1,4 +1,4 @@
-package com.tinkooladik.macrobenchmark.chart.models
+package com.tinkooladik.macromenchmark.chart.models
 
 data class BenchmarkReportUi(
     val device: String,

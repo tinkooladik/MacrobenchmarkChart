@@ -1,4 +1,4 @@
-package com.tinkooladik.macrobenchmark.chart.views
+package com.tinkooladik.macromenchmark.chart.views
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
