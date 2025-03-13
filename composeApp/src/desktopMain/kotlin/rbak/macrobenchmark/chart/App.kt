@@ -2,6 +2,7 @@ package rbak.macrobenchmark.chart
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -95,7 +96,7 @@ fun MetricBarChart(items: List<MetricChartItem>, scalingFactor: Double = 0.005) 
                     Text(item.title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 8.dp))
 
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         listOf(
@@ -120,14 +121,14 @@ fun MetricBarChart(items: List<MetricChartItem>, scalingFactor: Double = 0.005) 
 
                                         // Before Value (Blue)
                                         drawRoundRect(
-                                            color = Color.Blue,
+                                            color = ITEM_COLOR_BEFORE,
                                             topLeft = Offset(0f, size.height - beforeHeight),
                                             size = Size(size.width / 2 - 2f, beforeHeight)
                                         )
 
                                         // After Value (Green)
                                         drawRoundRect(
-                                            color = Color.Green,
+                                            color = ITEM_COLOR_AFTER,
                                             topLeft = Offset(
                                                 size.width / 2 + 2f,
                                                 size.height - afterHeight
@@ -145,6 +146,8 @@ fun MetricBarChart(items: List<MetricChartItem>, scalingFactor: Double = 0.005) 
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(1.dp).fillMaxWidth().background(Color(0xFFD2D2D2)))
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }
