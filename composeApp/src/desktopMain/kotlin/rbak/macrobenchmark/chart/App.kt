@@ -174,11 +174,11 @@ fun MetricValueBars(label: String, before: Double, after: Double) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(label, fontSize = 14.sp)
-        Text("Before: ${String.format("%.2f", before)}", fontSize = 12.sp)
-        Text("After: ${String.format("%.2f", after)}", fontSize = 12.sp)
+        Text("Before: ${String.format("%.1f", before)}", fontSize = 12.sp)
+        Text("After: ${String.format("%.1f", after)}", fontSize = 12.sp)
         Spacer(modifier = Modifier.height(8.dp))
         val difference = (after - before).let {
-            if (it > 0) "+${String.format("%.2f", it)}" else String.format("%.2f", it)
+            if (it > 0) "+${String.format("%.1f", it)}" else String.format("%.1f", it)
         }
         Spacer(
             modifier = Modifier.height(1.dp).width(200.dp)
