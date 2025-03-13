@@ -78,13 +78,17 @@ fun MetricValueBars(label: String, before: Double, after: Double) {
             fontSize = 10.sp,
             modifier = Modifier.offset(y = (-8).dp)
         )
-        val difference = (after - before).let {
+        val differencePercent = (if (before != 0.0) {
+            ((after - before) / before) * 100
+        } else {
+            0.0 // Avoid division by zero
+        }).let {
             if (it > 0) "+${String.format("%.1f", it)}" else String.format("%.1f", it)
         }
         Spacer(
             modifier = Modifier.height(1.dp).width(150.dp)
                 .background(Color(0xFFDEDCDC))
         )
-        Text("Difference: $difference", fontSize = 12.sp)
+        Text("Difference: $differencePercent%", fontSize = 12.sp)
     }
 }
