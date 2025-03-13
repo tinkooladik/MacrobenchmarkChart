@@ -64,12 +64,12 @@ fun BenchmarkChart() {
     }.first()
 
     val sampledChartItems = before.benchmarks.map { beforeItem ->
-        toSampledChart(
+        toChartSampled(
             before = beforeItem.sampledMetrics,
             after = after.benchmarks.first { it.name == beforeItem.name }.sampledMetrics
         )
     }.first()
-    MetricBarChart(chartItems)
+    MetricBarChart(chartItems + sampledChartItems)
 }
 
 val json = Json {
@@ -105,63 +105,8 @@ fun MetricBarChart(items: List<MetricChartItem>) {
                         modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        listOf(
-                            "Min" to item.min,
-                            "Median" to item.median,
-                            "Max" to item.max
-                        ).forEach { (label, values) ->
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.padding(horizontal = 8.dp)
-                            ) {
-                                Box(modifier = Modifier.height(120.dp).width(40.dp)) {
-                                    Canvas(
-                                        modifier = Modifier.fillMaxSize()
-                                    ) {
-                                        fun scale(value: Double, reference: Double): Float {
-                                            val ratio =
-                                                if (reference == 0.0) 1.0 else value / reference
-                                            return (ratio * size.height).toFloat()
-                                        }
-
-                                        val referenceValue = max(
-                                            values.first,
-                                            values.second
-                                        ) // Normalize based on the larger value
-                                        val beforeHeight = scale(values.first, referenceValue)
-                                        val afterHeight = scale(values.second, referenceValue)
-
-                                        // Before Value
-                                        drawRoundRect(
-                                            color = ITEM_COLOR_BEFORE,
-                                            topLeft = Offset(0f, size.height - beforeHeight),
-                                            size = Size(
-                                                size.width / 2,
-                                                beforeHeight
-                                            ) // Use exactly half the width
-                                        )
-
-                                        // After Value
-                                        drawRoundRect(
-                                            color = ITEM_COLOR_AFTER,
-                                            topLeft = Offset(
-                                                size.width / 2,
-                                                size.height - afterHeight
-                                            ), // No space added
-                                            size = Size(
-                                                size.width / 2,
-                                                afterHeight
-                                            ) // Use exactly half the width
-                                        )
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                Text(label, fontSize = 14.sp)
-                                Text("Before: ${values.first.toInt()}", fontSize = 12.sp)
-                                Text("After: ${values.second.toInt()}", fontSize = 12.sp)
-                            }
+                        item.values.forEach { (label, before, after) ->
+                            MetricValueBars(label, before, after)
                         }
                     }
                     Spacer(
@@ -178,6 +123,68 @@ fun MetricBarChart(items: List<MetricChartItem>) {
             adapter = rememberScrollbarAdapter(scrollState),
             modifier = Modifier.fillMaxHeight().padding(end = 8.dp)
         )
+    }
+}
+
+@Composable
+fun MetricValueBars(label: String, before: Double, after: Double) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 8.dp)
+    ) {
+        Box(modifier = Modifier.height(120.dp).width(40.dp)) {
+            Canvas(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                fun scale(value: Double, reference: Double): Float {
+                    val ratio =
+                        if (reference == 0.0) 1.0 else value / reference
+                    return (ratio * size.height).toFloat()
+                }
+
+                val referenceValue = max(before, after) // Normalize based on the larger value
+                val beforeHeight = scale(before, referenceValue)
+                val afterHeight = scale(after, referenceValue)
+
+                // Before Value
+                drawRoundRect(
+                    color = ITEM_COLOR_BEFORE,
+                    topLeft = Offset(0f, size.height - beforeHeight),
+                    size = Size(
+                        size.width / 2,
+                        beforeHeight
+                    ) // Use exactly half the width
+                )
+
+                // After Value
+                drawRoundRect(
+                    color = ITEM_COLOR_AFTER,
+                    topLeft = Offset(
+                        size.width / 2,
+                        size.height - afterHeight
+                    ), // No space added
+                    size = Size(
+                        size.width / 2,
+                        afterHeight
+                    ) // Use exactly half the width
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(label, fontSize = 14.sp)
+        Text("Before: ${String.format("%.2f", before)}", fontSize = 12.sp)
+        Text("After: ${String.format("%.2f", after)}", fontSize = 12.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        val difference = (after - before).let {
+            if (it > 0) "+${String.format("%.2f", it)}" else String.format("%.2f", it)
+        }
+        Spacer(
+            modifier = Modifier.height(1.dp).width(200.dp)
+                .background(Color(0xFFDEDCDC))
+        )
+        Text("Difference: $difference", fontSize = 12.sp)
     }
 }
 

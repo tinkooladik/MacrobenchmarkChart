@@ -47,20 +47,16 @@ fun SampledMetric.toUi() = SampledMetricUi(
     P50 = P50, P90 = P90, P95 = P95, P99 = P99
 )
 
+data class MetricValue(
+    val label: String,
+    val before: Double,
+    val after: Double
+)
+
 // frameCount
 data class MetricChartItem(
     val title: String,
-    val min: Pair<Double, Double>,
-    val median: Pair<Double, Double>,
-    val max: Pair<Double, Double>
-)
-
-data class SampledMetricsChartItem(
-    val title: String,
-    val P50: Pair<Double, Double>,
-    val P90: Pair<Double, Double>,
-    val P95: Pair<Double, Double>,
-    val P99: Pair<Double, Double>
+    val values: List<MetricValue>
 )
 
 fun toChart(
@@ -70,24 +66,28 @@ fun toChart(
     return before.map { (name, metrics) ->
         MetricChartItem(
             title = name,
-            min = metrics.minimum to (after[name]?.minimum ?: 0.0),
-            median = metrics.median to (after[name]?.median ?: 0.0),
-            max = metrics.maximum to (after[name]?.maximum ?: 0.0),
+            values = listOf(
+                MetricValue("Min", metrics.minimum, (after[name]?.minimum ?: 0.0)),
+                MetricValue("Median", metrics.median, (after[name]?.median ?: 0.0)),
+                MetricValue("Max", metrics.maximum, (after[name]?.maximum ?: 0.0))
+            )
         )
     }
 }
 
-fun toSampledChart(
+fun toChartSampled(
     before: Map<String, SampledMetricUi>,
     after: Map<String, SampledMetricUi>
-): List<SampledMetricsChartItem> {
+): List<MetricChartItem> {
     return before.map { (name, metrics) ->
-        SampledMetricsChartItem(
+        MetricChartItem(
             title = name,
-            P50 = metrics.P50 to (after[name]?.P50 ?: 0.0),
-            P90 = metrics.P90 to (after[name]?.P90 ?: 0.0),
-            P95 = metrics.P95 to (after[name]?.P95 ?: 0.0),
-            P99 = metrics.P99 to (after[name]?.P99 ?: 0.0)
+            values = listOf(
+                MetricValue("P50", metrics.P50, (after[name]?.P50 ?: 0.0)),
+                MetricValue("P90", metrics.P90, (after[name]?.P90 ?: 0.0)),
+                MetricValue("P95", metrics.P95, (after[name]?.P95 ?: 0.0)),
+                MetricValue("P99", metrics.P99, (after[name]?.P99 ?: 0.0))
+            )
         )
     }
 }
