@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.math.log10
+import kotlin.math.max
 
 @Composable
 @Preview
@@ -86,7 +88,9 @@ fun readBenchmark(fileName: String): BenchmarkReportUi {
 }
 
 @Composable
-fun MetricBarChart(items: List<MetricChartItem>, scalingFactor: Double = 0.005) {
+fun MetricBarChart(items: List<MetricChartItem>) {
+    val maxHeight = 120
+
     val scrollState = rememberScrollState()
 
     Row(modifier = Modifier.fillMaxSize()) {
@@ -108,16 +112,18 @@ fun MetricBarChart(items: List<MetricChartItem>, scalingFactor: Double = 0.005) 
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.padding(horizontal = 8.dp)
                             ) {
-                                Box(modifier = Modifier.height(150.dp).width(40.dp)) {
+                                Box(modifier = Modifier.height(120.dp).width(40.dp)) {
                                     Canvas(
                                         modifier = Modifier.fillMaxSize()
                                     ) {
-                                        fun scale(value: Double): Float {
-                                            return (value * scalingFactor).toFloat()
+                                        fun scale(value: Double, reference: Double): Float {
+                                            val ratio = if (reference == 0.0) 1.0 else value / reference
+                                            return (ratio * maxHeight).toFloat()
                                         }
 
-                                        val beforeHeight = scale(values.first)
-                                        val afterHeight = scale(values.second)
+                                        val referenceValue = max(values.first, values.second) // Use max value for relative scaling
+                                        val beforeHeight = scale(values.first, referenceValue)
+                                        val afterHeight = scale(values.second, referenceValue)
 
                                         // Before Value (Blue)
                                         drawRoundRect(
