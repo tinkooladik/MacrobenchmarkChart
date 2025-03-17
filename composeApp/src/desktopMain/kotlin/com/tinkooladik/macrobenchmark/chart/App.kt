@@ -53,31 +53,7 @@ fun App() {
                 )
 
                 if (before != null && after != null) {
-                    val combinedItems by remember {
-                        derivedStateOf {
-                            toCombinedChartItems(before!!, after!!)
-                        }
-                    }
-                    var columnWidth by remember { mutableStateOf(0) }
-                    var columnHeight by remember { mutableStateOf(0) }
-
-                    Button(onClick = {
-                        captureComposableAsImage(
-                            width = columnWidth,
-                            height = columnHeight
-                        ) {
-                            BenchmarkChart(combinedItems)
-                        }
-                    }) {
-                        Text("Save report to clipboard")
-                    }
-
-                    BenchmarkChart(
-                        combinedItems,
-                        Modifier.onGloballyPositioned { coordinates ->
-                            columnWidth = coordinates.size.width
-                            columnHeight = coordinates.size.height
-                        })
+                    MainContent(before!!, after!!)
                 }
             }
 
@@ -88,4 +64,33 @@ fun App() {
             )
         }
     }
+}
+
+@Composable
+fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
+    val combinedItems by remember {
+        derivedStateOf {
+            toCombinedChartItems(before, after)
+        }
+    }
+    var columnWidth by remember { mutableStateOf(0) }
+    var columnHeight by remember { mutableStateOf(0) }
+
+    Button(onClick = {
+        captureComposableAsImage(
+            width = columnWidth,
+            height = columnHeight
+        ) {
+            BenchmarkChart(combinedItems)
+        }
+    }) {
+        Text("Save report to clipboard")
+    }
+
+    BenchmarkChart(
+        combinedItems,
+        Modifier.onGloballyPositioned { coordinates ->
+            columnWidth = coordinates.size.width
+            columnHeight = coordinates.size.height
+        })
 }

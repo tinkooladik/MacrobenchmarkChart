@@ -30,6 +30,8 @@ val benchmarkComparisonRules: Map<String, String> = mapOf(
 fun captureComposableAsImage(
     width: Int,
     height: Int,
+    // todo let user chose folder
+    folder: String = "reports",
     // todo this will be benchmark name
     title: String = "report",
     content: @Composable () -> Unit
@@ -49,7 +51,7 @@ fun captureComposableAsImage(
     val data = Image.makeFromBitmap(bitmap).use { image ->
         image.encodeToData(EncodedImageFormat.PNG)
     }
-    val reportsDir = File("reports")
+    val reportsDir = File(folder)
     if (!reportsDir.exists()) {
         reportsDir.mkdirs()
     }
