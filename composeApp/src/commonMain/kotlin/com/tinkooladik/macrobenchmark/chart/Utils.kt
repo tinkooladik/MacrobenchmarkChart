@@ -30,6 +30,8 @@ val benchmarkComparisonRules: Map<String, String> = mapOf(
 fun captureComposableAsImage(
     width: Int,
     height: Int,
+    // todo this will be benchmark name
+    title: String = "report",
     content: @Composable () -> Unit
 ) {
     val scene = ImageComposeScene(
@@ -40,15 +42,47 @@ fun captureComposableAsImage(
     ) {
         content()
     }
+
     val img = scene.render()
 
     val bitmap = Bitmap.makeFromImage(img)
     val data = Image.makeFromBitmap(bitmap).use { image ->
         image.encodeToData(EncodedImageFormat.PNG)
     }
-    val out = File("test.png")
-    out.delete() // If you want to overwrite like that
+    val reportsDir = File("reports")
+    if (!reportsDir.exists()) {
+        reportsDir.mkdirs()
+    }
+    val out = File(reportsDir, "$title.png")
+    out.delete()
     data?.bytes?.let {
         out.writeBytes(data.bytes)
+    }
+    copyFileToClipboardMacOS(out)
+}
+
+fun copyFileToClipboardMacOS(file: File) {
+    if (!file.exists()) {
+        println("❌ File not found: ${file.absolutePath}")
+        return
+    }
+
+    try {
+        val appleScript = """
+            set theFile to POSIX file "${file.absolutePath}"
+            set theList to {theFile}
+            set theClipboard to theList as «class furl»
+            set the clipboard to theClipboard
+        """.trimIndent()
+
+        val process = ProcessBuilder("osascript", "-e", appleScript)
+            .redirectErrorStream(true)
+            .start()
+
+        process.waitFor()
+
+        println("✅ File copied to clipboard (macOS): ${file.absolutePath}")
+    } catch (e: Exception) {
+        println("❌ Failed to copy file to clipboard: ${e.message}")
     }
 }
