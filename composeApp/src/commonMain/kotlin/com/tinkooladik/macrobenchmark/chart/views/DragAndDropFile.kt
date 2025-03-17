@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,8 +34,7 @@ fun DragAndDropFile(text: String, onFileDropped: (File) -> Unit) {
     Column(
         modifier = Modifier
             .width(400.dp)
-            .height(300.dp)
-            .padding(20.dp)
+            .wrapContentHeight()
             .clip(RoundedCornerShape(10.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
