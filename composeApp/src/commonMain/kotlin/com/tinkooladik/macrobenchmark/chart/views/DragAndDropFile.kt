@@ -34,7 +34,6 @@ fun DragAndDropFile(text: String, onFileDropped: (File) -> Unit) {
         modifier = Modifier
             .width(400.dp)
             .height(300.dp)
-            .padding(20.dp)
             .clip(RoundedCornerShape(10.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
