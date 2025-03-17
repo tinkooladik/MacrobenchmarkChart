@@ -1,21 +1,9 @@
 package com.tinkooladik.macrobenchmark.chart
 
-import com.tinkooladik.macrobenchmark.chart.models.BenchmarkReport
-import com.tinkooladik.macrobenchmark.chart.models.BenchmarkReportUi
-import com.tinkooladik.macrobenchmark.chart.models.toUi
 import kotlinx.serialization.json.Json
 
 val json = Json {
     ignoreUnknownKeys = true
-}
-
-fun readBenchmark(fileName: String): BenchmarkReportUi {
-    val classLoader = Thread.currentThread().contextClassLoader
-    val resource = classLoader.getResource(fileName)
-    requireNotNull(resource) { "Resource not found: $fileName" }
-    val file = resource.readText()
-    val benchmark = json.decodeFromString<BenchmarkReport>(file)
-    return benchmark.toUi()
 }
 
 val benchmarkComparisonRules: Map<String, String> = mapOf(
