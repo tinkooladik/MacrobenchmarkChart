@@ -5,7 +5,7 @@ data class BenchmarkReportUi(
     val iterations: Int,
     val benchmarks: List<BenchmarkUi>
 ) {
-    fun isTheSame(other: BenchmarkReportUi):Boolean {
+    fun isTheSame(other: BenchmarkReportUi): Boolean {
         return device == other.device && iterations == other.iterations
     }
 }
@@ -68,7 +68,24 @@ data class MetricChartItem(
     val values: List<MetricValue>
 )
 
-fun toChart(
+fun toCombinedChartItems(before: BenchmarkReportUi, after: BenchmarkReportUi): List<MetricChartItem> {
+    val chartItems = before.benchmarks.map { beforeItem ->
+        toChart(
+            before = beforeItem.metrics,
+            after = after.benchmarks.first { it.name == beforeItem.name }.metrics
+        )
+    }.first()
+
+    val sampledChartItems = before.benchmarks.map { beforeItem ->
+        toChartSampled(
+            before = beforeItem.sampledMetrics,
+            after = after.benchmarks.first { it.name == beforeItem.name }.sampledMetrics
+        )
+    }.first()
+    return chartItems + sampledChartItems
+}
+
+private fun toChart(
     before: Map<String, MetricUi>,
     after: Map<String, MetricUi>
 ): List<MetricChartItem> {
@@ -84,7 +101,7 @@ fun toChart(
     }
 }
 
-fun toChartSampled(
+private fun toChartSampled(
     before: Map<String, SampledMetricUi>,
     after: Map<String, SampledMetricUi>
 ): List<MetricChartItem> {
