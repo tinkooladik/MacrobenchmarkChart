@@ -4,7 +4,11 @@ data class BenchmarkReportUi(
     val device: String,
     val iterations: Int,
     val benchmarks: List<BenchmarkUi>
-)
+) {
+    fun isTheSame(other: BenchmarkReportUi):Boolean {
+        return device == other.device && iterations == other.iterations
+    }
+}
 
 data class BenchmarkUi(
     val name: String,
@@ -27,7 +31,7 @@ data class SampledMetricUi(
 
 fun BenchmarkReport.toUi() = BenchmarkReportUi(
     device = context.run {
-        "${build.brand} $${build.model} (${build.version} $osCodenameAbbreviated)"
+        "${build.brand} ${build.model} (${build.version.sdk} $osCodenameAbbreviated)"
     },
     iterations = benchmarks.sumOf { it.repeatIterations },
     benchmarks = benchmarks.map { it.toUi() }

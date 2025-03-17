@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.tinkooladik.macrobenchmark.chart.json
 import com.tinkooladik.macrobenchmark.chart.models.BenchmarkReport
 import com.tinkooladik.macrobenchmark.chart.models.BenchmarkReportUi
@@ -24,8 +25,11 @@ fun UploadFiles(
     onUploadedBefore: (BenchmarkReportUi) -> Unit,
     onUploadedAfter: (BenchmarkReportUi) -> Unit
 ) {
-    var beforeError by remember { mutableStateOf("") }
-    var afterError by remember { mutableStateOf("") }
+    var beforeReport by remember { mutableStateOf<BenchmarkReportUi?>(null) }
+    var afterReport by remember { mutableStateOf<BenchmarkReportUi?>(null) }
+    var beforeError by remember { mutableStateOf<String?>(null) }
+    var afterError by remember { mutableStateOf<String?>(null) }
+
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
         Column(
             modifier = Modifier.weight(1f)
@@ -34,13 +38,25 @@ fun UploadFiles(
             DragAndDropFile(text = "Before") { file ->
                 try {
                     json.decodeFromString<BenchmarkReport>(file.readText()).toUi()
-                        .let { onUploadedBefore(it) }
+                        .let {
+                            beforeReport = it
+                            onUploadedBefore(it)
+                        }
                     beforeError = ""
                 } catch (e: Exception) {
                     beforeError = "Error parsing `Before` file: ${e.message}"
+                    beforeReport = null
                 }
             }
-            Text(beforeError, color = Color.Red)
+            beforeError?.let {
+                Text(it, color = Color.Red)
+            }
+            beforeReport?.let {
+                Column(modifier = Modifier.padding(start = 20.dp)) {
+                    Text("Device: ${it.device}", fontSize = 12.sp)
+                    Text("Iterations: ${it.iterations}", fontSize = 12.sp)
+                }
+            }
         }
 
         Column(
@@ -50,13 +66,31 @@ fun UploadFiles(
             DragAndDropFile(text = "After") { file ->
                 try {
                     json.decodeFromString<BenchmarkReport>(file.readText()).toUi()
-                        .let { onUploadedAfter(it) }
+                        .let {
+                            afterReport = it
+                            onUploadedAfter(it)
+                        }
                     afterError = ""
                 } catch (e: Exception) {
                     afterError = "Error parsing `After` file: ${e.message}"
+                    afterReport = null
                 }
             }
-            Text(afterError, color = Color.Red)
+            afterError?.let {
+                Text(it, color = Color.Red)
+            }
+            afterReport?.let {
+                Column(modifier = Modifier.padding(start = 20.dp)) {
+                    Text("Device: ${it.device}", fontSize = 12.sp)
+                    Text("Iterations: ${it.iterations}", fontSize = 12.sp)
+                }
+            }
         }
+    }
+
+    if (beforeReport != null && afterReport != null &&
+        beforeReport!!.isTheSame(afterReport!!).not()
+    ) {
+        Text("Before / After data do not match.", color = Color.Red)
     }
 }
