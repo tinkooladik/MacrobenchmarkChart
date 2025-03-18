@@ -2,6 +2,7 @@ package com.tinkooladik.macrobenchmark.chart
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ImageComposeScene
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
@@ -30,16 +31,16 @@ val benchmarkComparisonRules: Map<String, String> = mapOf(
 fun captureComposableAsImage(
     width: Int,
     height: Int,
+    density: Float,
     // todo let user chose folder
     folder: String = "reports",
-    // todo this will be benchmark name
     title: String = "report",
     content: @Composable () -> Unit
 ) {
     val scene = ImageComposeScene(
         width = width,
         height = height,
-        density = Density(3f),
+        density = Density(density),
         coroutineContext = Dispatchers.Unconfined
     ) {
         content()

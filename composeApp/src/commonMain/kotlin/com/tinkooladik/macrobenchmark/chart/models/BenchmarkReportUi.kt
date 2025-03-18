@@ -5,8 +5,13 @@ data class BenchmarkReportUi(
     val iterations: Int,
     val benchmarks: List<BenchmarkUi>
 ) {
+    private val _benchmarkKeys = benchmarks.map { it.name }
+        .toSet()
+
     fun isTheSame(other: BenchmarkReportUi): Boolean {
-        return device == other.device && iterations == other.iterations
+        return device == other.device &&
+                iterations == other.iterations &&
+                _benchmarkKeys == other._benchmarkKeys
     }
 }
 
@@ -68,21 +73,22 @@ data class MetricChartItem(
     val values: List<MetricValue>
 )
 
-fun toCombinedChartItems(before: BenchmarkReportUi, after: BenchmarkReportUi): List<MetricChartItem> {
-    val chartItems = before.benchmarks.map { beforeItem ->
+fun toCombinedChartItems(
+    before: BenchmarkReportUi,
+    after: BenchmarkReportUi
+): Map<String, List<MetricChartItem>> {
+    val chartItems = before.benchmarks.associateBy { beforeItem ->
+        beforeItem.name
+    }.mapValues { (_, value) ->
         toChart(
-            before = beforeItem.metrics,
-            after = after.benchmarks.first { it.name == beforeItem.name }.metrics
+            before = value.metrics,
+            after = after.benchmarks.first { it.name == value.name }.metrics
+        ) + toChartSampled(
+            before = value.sampledMetrics,
+            after = after.benchmarks.first { it.name == value.name }.sampledMetrics
         )
-    }.first()
-
-    val sampledChartItems = before.benchmarks.map { beforeItem ->
-        toChartSampled(
-            before = beforeItem.sampledMetrics,
-            after = after.benchmarks.first { it.name == beforeItem.name }.sampledMetrics
-        )
-    }.first()
-    return chartItems + sampledChartItems
+    }
+    return chartItems
 }
 
 private fun toChart(
