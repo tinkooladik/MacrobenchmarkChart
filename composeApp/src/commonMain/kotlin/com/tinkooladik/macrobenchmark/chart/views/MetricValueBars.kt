@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,13 +18,14 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.abs
 import kotlin.math.max
 
 private val ITEM_COLOR_BEFORE = Color(0xFF5C8CBE)
 private val ITEM_COLOR_AFTER = Color(0xFF3D7BB9)
 
 @Composable
-fun MetricValueBars(label: String, before: Double, after: Double) {
+fun MetricValueBars(label: String, before: Double, after: Double, lowerBetter: Boolean) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 8.dp)
@@ -83,12 +82,23 @@ fun MetricValueBars(label: String, before: Double, after: Double) {
         } else {
             0.0 // Avoid division by zero
         }).let {
-            if (it > 0) "+${String.format("%.1f", it)}" else String.format("%.1f", it)
+            val sign = when {
+                after > before -> "+"
+                after < before -> "-"
+                else -> ""
+            }
+            "$sign${String.format("%.1f", abs(it))}"
         }
         Spacer(
             modifier = Modifier.height(1.dp).width(150.dp)
                 .background(Color(0xFFDEDCDC))
         )
         Text("Difference: $differencePercent%", fontSize = 12.sp)
+
+        val thumb = when (lowerBetter) {
+            true -> if (after < before) "\uD83D\uDC4D" else "\uD83D\uDC4E"
+            false -> if (after > before) "\uD83D\uDC4D" else "\uD83D\uDC4E"
+        }
+        Text(thumb, modifier = Modifier.padding(top = 10.dp))
     }
 }
