@@ -5,8 +5,13 @@ data class BenchmarkReportUi(
     val iterations: Int,
     val benchmarks: List<BenchmarkUi>
 ) {
+    private val _benchmarkKeys = benchmarks.map { it.name }
+        .toSet()
+
     fun isTheSame(other: BenchmarkReportUi): Boolean {
-        return device == other.device && iterations == other.iterations
+        return device == other.device &&
+                iterations == other.iterations &&
+                _benchmarkKeys == other._benchmarkKeys
     }
 }
 
@@ -78,18 +83,12 @@ fun toCombinedChartItems(
         toChart(
             before = value.metrics,
             after = after.benchmarks.first { it.name == value.name }.metrics
-        )
-    }
-
-    val sampledChartItems = before.benchmarks.associateBy { beforeItem ->
-        beforeItem.name
-    }.mapValues { (_, value) ->
-        toChartSampled(
+        ) + toChartSampled(
             before = value.sampledMetrics,
             after = after.benchmarks.first { it.name == value.name }.sampledMetrics
         )
     }
-    return chartItems + sampledChartItems
+    return chartItems
 }
 
 private fun toChart(

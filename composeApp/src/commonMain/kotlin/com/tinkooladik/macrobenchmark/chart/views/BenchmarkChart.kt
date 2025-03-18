@@ -19,33 +19,27 @@ import com.tinkooladik.macrobenchmark.chart.benchmarkComparisonRules
 import com.tinkooladik.macrobenchmark.chart.models.MetricChartItem
 
 @Composable
-fun BenchmarkChart(items: List<MetricChartItem>, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize()
-            .background(Color(0xFFFFFFFF))
-            .padding(16.dp)
-    ) {
-        items.forEach { item ->
-            Text(item.title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 4.dp))
-            Text(
-                benchmarkComparisonRules[item.title] ?: "",
-                fontSize = 12.sp,
-                modifier = Modifier.padding(bottom = 36.dp)
-            )
+fun BenchmarkChart(items: List<MetricChartItem>) {
+    items.forEach { item ->
+        Text(item.title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 4.dp))
+        Text(
+            benchmarkComparisonRules[item.title] ?: "",
+            fontSize = 12.sp,
+            modifier = Modifier.padding(bottom = 36.dp, start = 20.dp, end = 20.dp)
+        )
 
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                item.values.forEach { (label, before, after) ->
-                    MetricValueBars(label, before, after)
-                }
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            item.values.forEach { (label, before, after) ->
+                MetricValueBars(label, before, after)
             }
-            Spacer(
-                modifier = Modifier.height(1.dp).fillMaxWidth()
-                    .background(Color(0xFFD2D2D2))
-            )
-            Spacer(modifier = Modifier.height(24.dp))
         }
+        Spacer(
+            modifier = Modifier.height(1.dp).fillMaxWidth()
+                .background(Color(0xFFD2D2D2))
+        )
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
