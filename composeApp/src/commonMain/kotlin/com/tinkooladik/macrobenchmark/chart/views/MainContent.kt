@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tinkooladik.macrobenchmark.chart.captureComposableAsImage
@@ -43,6 +44,9 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
     var columnWidth by remember { mutableStateOf(0) }
     var columnHeight by remember { mutableStateOf(0) }
 
+    val density = LocalDensity.current.density
+    println("kuskus density $density")
+
     val content: @Composable () -> Unit = {
         combinedItems[selectedBenchmark]?.let {
             Column(
@@ -56,11 +60,11 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
             ) {
                 Text(
                     selectedBenchmark,
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .background(Color(0xFFCFF9FF))
-                        .padding(12.dp)
+                        .padding(20.dp)
                 )
                 BenchmarkChart(it)
             }
@@ -75,6 +79,7 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
             captureComposableAsImage(
                 width = columnWidth,
                 height = columnHeight,
+                density = density,
                 title = key
             ) {
                 content()
@@ -83,19 +88,11 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
                 }
             }
         }
-        // capture single item:
-//        captureComposableAsImage(
-//            width = columnWidth,
-//            height = columnHeight,
-//            title = selectedBenchmark
-//        ) {
-//            content()
-//        }
     }) {
         Text("Save report to clipboard")
     }
 
-    Spacer(modifier = Modifier.height(20.dp))
+    Spacer(modifier = Modifier.height(12.dp))
 
     // filter chips
     LazyRow {

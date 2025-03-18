@@ -21,15 +21,15 @@ import com.tinkooladik.macrobenchmark.chart.models.MetricChartItem
 @Composable
 fun BenchmarkChart(items: List<MetricChartItem>) {
     items.forEach { item ->
-        Text(item.title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 4.dp))
+        Text(item.title, fontSize = 16.sp, modifier = Modifier.padding(bottom = 4.dp))
         Text(
             benchmarkComparisonRules[item.title] ?: "",
             fontSize = 12.sp,
-            modifier = Modifier.padding(bottom = 36.dp, start = 20.dp, end = 20.dp)
+            modifier = Modifier.padding(bottom = 36.dp)
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             item.values.forEach { (label, before, after) ->
@@ -40,6 +40,6 @@ fun BenchmarkChart(items: List<MetricChartItem>) {
             modifier = Modifier.height(1.dp).fillMaxWidth()
                 .background(Color(0xFFD2D2D2))
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
