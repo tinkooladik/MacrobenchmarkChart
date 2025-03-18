@@ -45,7 +45,6 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
     var columnHeight by remember { mutableStateOf(0) }
 
     val density = LocalDensity.current.density
-    println("kuskus density $density")
 
     val content: @Composable () -> Unit = {
         combinedItems[selectedBenchmark]?.let {
