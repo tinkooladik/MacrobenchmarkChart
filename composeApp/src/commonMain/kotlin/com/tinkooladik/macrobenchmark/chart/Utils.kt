@@ -2,7 +2,6 @@ package com.tinkooladik.macrobenchmark.chart
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ImageComposeScene
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
@@ -14,18 +13,6 @@ import java.io.File
 val json = Json {
     ignoreUnknownKeys = true
 }
-
-val benchmarkComparisonRules: Map<String, String> = mapOf(
-    "frameCount" to "The higher, the better. More frames indicate smoother performance.",
-    "memoryHeapSizeLastKb" to "The lower, the better. Less heap memory usage reduces memory pressure.",
-    "memoryHeapSizeMaxKb" to "The lower, the better. Indicates peak memory usage; high values suggest memory inefficiencies.",
-    "memoryRssAnonLastKb" to "The lower, the better. Represents the actual RAM used; high values indicate more memory consumption.",
-    "memoryRssAnonMaxKb" to "The lower, the better. High peak values may lead to performance degradation due to memory pressure.",
-    "memoryRssFileLastKb" to "The lower, the better. Measures memory-mapped file usage; reducing this can improve efficiency.",
-    "memoryRssFileMaxKb" to "The lower, the better. High values mean more file-backed memory in RAM, which might indicate excessive caching.",
-    "frameDurationCpuMs" to "The lower, the better. Measures frame rendering time; lower values mean smoother performance.",
-    "frameOverrunMs" to "The lower, the better. Measures frame rendering delays; high values indicate lag and jank."
-)
 
 /** Captures a composable and renders it into an ImageBitmap */
 fun captureComposableAsImage(
