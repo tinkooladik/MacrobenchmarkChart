@@ -24,7 +24,7 @@ fun captureComposableAsImage(
     title: String = "report",
     copyToClipboard: Boolean = true,
     content: @Composable () -> Unit
-) {
+): Boolean {
     val scene = ImageComposeScene(
         width = width,
         height = height,
@@ -50,14 +50,15 @@ fun captureComposableAsImage(
         out.writeBytes(data.bytes)
     }
     if (copyToClipboard) {
-        copyFileToClipboardMacOS(out)
+        return copyFileToClipboardMacOS(out)
     }
+    return data != null
 }
 
-fun copyFileToClipboardMacOS(file: File) {
+fun copyFileToClipboardMacOS(file: File): Boolean {
     if (!file.exists()) {
         println("❌ File not found: ${file.absolutePath}")
-        return
+        return false
     }
 
     try {
@@ -75,8 +76,10 @@ fun copyFileToClipboardMacOS(file: File) {
         process.waitFor()
 
         println("✅ File copied to clipboard (macOS): ${file.absolutePath}")
+        return true
     } catch (e: Exception) {
         println("❌ Failed to copy file to clipboard: ${e.message}")
+        return false
     }
 }
 

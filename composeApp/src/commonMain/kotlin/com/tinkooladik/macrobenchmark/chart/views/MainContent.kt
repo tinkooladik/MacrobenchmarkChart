@@ -36,7 +36,12 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
+fun MainContent(
+    before: BenchmarkReportUi,
+    after: BenchmarkReportUi,
+    showSnackbar: (String) -> Unit
+) {
+
     val combinedItems by remember {
         derivedStateOf {
             toCombinedChartItems(before, after)
@@ -76,7 +81,7 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
     // capture buttons
     Row {
         Button(onClick = {
-            captureComposableAsImage(
+            val result = captureComposableAsImage(
                 width = columnWidth,
                 height = columnHeight,
                 density = density,
@@ -84,29 +89,32 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
             ) {
                 content()
             }
+            showSnackbar(if (result) "Copied ✅" else "Something went wrong")
         }) {
             Text("Copy to clipboard")
         }
         Spacer(modifier = Modifier.width(20.dp))
         Button(onClick = {
             // capture all items:
-            val folder = selectFolder()?.absolutePath
-            combinedItems.keys.toList().forEach { key ->
-                selectedBenchmark = key
-                captureComposableAsImage(
-                    width = columnWidth,
-                    height = columnHeight,
-                    density = density,
-                    folder = folder ?: "selectedFolder",
-                    title = key,
-                    copyToClipboard = false
-                ) {
-                    content()
-                    LaunchedEffect(selectedBenchmark) {
-                        delay(200)
+            selectFolder()?.absolutePath?.let { folder ->
+                combinedItems.keys.toList().forEach { key ->
+                    selectedBenchmark = key
+                    val result = captureComposableAsImage(
+                        width = columnWidth,
+                        height = columnHeight,
+                        density = density,
+                        folder = folder,
+                        title = key,
+                        copyToClipboard = false
+                    ) {
+                        content()
+                        LaunchedEffect(selectedBenchmark) {
+                            delay(200)
+                        }
                     }
+                    showSnackbar(if (result) "Reports saved ✅" else "Something went wrong")
                 }
-            }
+            } ?: showSnackbar("Failed to select folder")
         }) {
             Text("Save all reports")
         }
