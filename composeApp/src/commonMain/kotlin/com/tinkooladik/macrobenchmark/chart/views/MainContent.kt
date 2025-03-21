@@ -2,10 +2,12 @@ package com.tinkooladik.macrobenchmark.chart.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
@@ -29,11 +31,17 @@ import androidx.compose.ui.unit.sp
 import com.tinkooladik.macrobenchmark.chart.captureComposableAsImage
 import com.tinkooladik.macrobenchmark.chart.models.BenchmarkReportUi
 import com.tinkooladik.macrobenchmark.chart.models.toCombinedChartItems
+import com.tinkooladik.macrobenchmark.chart.selectFolder
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
+fun MainContent(
+    before: BenchmarkReportUi,
+    after: BenchmarkReportUi,
+    showSnackbar: (String) -> Unit
+) {
+
     val combinedItems by remember {
         derivedStateOf {
             toCombinedChartItems(before, after)
@@ -70,25 +78,46 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
         }
     }
 
-    // capture button
-    Button(onClick = {
-        // capture all items:
-        combinedItems.keys.toList().forEach { key ->
-            selectedBenchmark = key
-            captureComposableAsImage(
+    // capture buttons
+    Row {
+        Button(onClick = {
+            val result = captureComposableAsImage(
                 width = columnWidth,
                 height = columnHeight,
                 density = density,
-                title = key
+                title = selectedBenchmark
             ) {
                 content()
-                LaunchedEffect(selectedBenchmark) {
-                    delay(200)
-                }
             }
+            showSnackbar(if (result) "Copied ✅" else "Something went wrong")
+        }) {
+            Text("Copy to clipboard")
         }
-    }) {
-        Text("Save report to clipboard")
+        Spacer(modifier = Modifier.width(20.dp))
+        Button(onClick = {
+            // capture all items:
+            selectFolder()?.absolutePath?.let { folder ->
+                combinedItems.keys.toList().forEach { key ->
+                    selectedBenchmark = key
+                    val result = captureComposableAsImage(
+                        width = columnWidth,
+                        height = columnHeight,
+                        density = density,
+                        folder = folder,
+                        title = key,
+                        copyToClipboard = false
+                    ) {
+                        content()
+                        LaunchedEffect(selectedBenchmark) {
+                            delay(200)
+                        }
+                    }
+                    showSnackbar(if (result) "Reports saved ✅" else "Something went wrong")
+                }
+            } ?: showSnackbar("Failed to select folder")
+        }) {
+            Text("Save all reports")
+        }
     }
 
     Spacer(modifier = Modifier.height(12.dp))
