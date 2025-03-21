@@ -40,8 +40,12 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.tinkooladik.macrobenchmark.chart"
+            packageName = "MacrobenchmarkChart"
             packageVersion = "1.0.0"
+
+            macOS {
+                iconFile.set(project.file("src/commonMain/resources/icon.icns"))
+            }
         }
     }
 }
