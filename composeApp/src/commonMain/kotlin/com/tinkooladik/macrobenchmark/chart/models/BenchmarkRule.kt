@@ -33,5 +33,9 @@ enum class BenchmarkRule(val description: String, val lowerBetter: Boolean) {
     frameOverrunMs(
         "The lower, the better. Measures frame rendering delays; high values indicate lag and jank.",
         true
+    ),
+    timeToInitialDisplayMs(
+        "The lower, the better.",
+        true
     );
 }

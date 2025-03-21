@@ -2,10 +2,12 @@ package com.tinkooladik.macrobenchmark.chart.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.tinkooladik.macrobenchmark.chart.captureComposableAsImage
 import com.tinkooladik.macrobenchmark.chart.models.BenchmarkReportUi
 import com.tinkooladik.macrobenchmark.chart.models.toCombinedChartItems
+import com.tinkooladik.macrobenchmark.chart.selectFolder
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -70,25 +73,43 @@ fun MainContent(before: BenchmarkReportUi, after: BenchmarkReportUi) {
         }
     }
 
-    // capture button
-    Button(onClick = {
-        // capture all items:
-        combinedItems.keys.toList().forEach { key ->
-            selectedBenchmark = key
+    // capture buttons
+    Row {
+        Button(onClick = {
             captureComposableAsImage(
                 width = columnWidth,
                 height = columnHeight,
                 density = density,
-                title = key
+                title = selectedBenchmark
             ) {
                 content()
-                LaunchedEffect(selectedBenchmark) {
-                    delay(200)
+            }
+        }) {
+            Text("Copy to clipboard")
+        }
+        Spacer(modifier = Modifier.width(20.dp))
+        Button(onClick = {
+            // capture all items:
+            val folder = selectFolder()?.absolutePath
+            combinedItems.keys.toList().forEach { key ->
+                selectedBenchmark = key
+                captureComposableAsImage(
+                    width = columnWidth,
+                    height = columnHeight,
+                    density = density,
+                    folder = folder ?: "selectedFolder",
+                    title = key,
+                    copyToClipboard = false
+                ) {
+                    content()
+                    LaunchedEffect(selectedBenchmark) {
+                        delay(200)
+                    }
                 }
             }
+        }) {
+            Text("Save all reports")
         }
-    }) {
-        Text("Save report to clipboard")
     }
 
     Spacer(modifier = Modifier.height(12.dp))
