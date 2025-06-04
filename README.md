@@ -4,6 +4,13 @@ Desktop tool to visualize [Macrobenchmark](https://developer.android.com/topic/p
 
 https://github.com/user-attachments/assets/9aa975b7-41c2-4fa8-a1ee-53f4b5fca2ac
 
+### How to run
+
+To run it, use `./gradlew run desktopRun -DmainClass=MainKt --quiet`. Studio Run button won't work due to 
+
+### How to analyze
+
+<img width="600" alt="image" src="https://github.com/user-attachments/assets/805548b2-c9a5-4d02-a042-cb1de5e164a2" />
 
 ------
 
