@@ -71,7 +71,9 @@ data class MetricValue(
 data class MetricChartItem(
     val title: String,
     val values: List<MetricValue>
-)
+){
+    val rule = BenchmarkRule.valueOf(title)
+}
 
 fun toCombinedChartItems(
     before: BenchmarkReportUi,
